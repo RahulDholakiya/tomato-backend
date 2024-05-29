@@ -5,6 +5,8 @@ import {
   removeFood,
 } from "../controllers/foodController.js";
 import multer from "multer";
+import authMiddleware from "../middleware/auth.js";
+// import { verifyAdmin } from "../middleware/user.js";
 
 const foodRouter = express.Router();
 
