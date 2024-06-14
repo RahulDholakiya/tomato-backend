@@ -1,16 +1,15 @@
 import express from "express";
 import {
   addFood,
+  foodCategoryForAdminPanel,
   listFood,
   removeFood,
+  updateFood,
 } from "../controllers/foodController.js";
 import multer from "multer";
-import authMiddleware from "../middleware/auth.js";
-// import { verifyAdmin } from "../middleware/user.js";
 
 const foodRouter = express.Router();
 
-// Image Storage Engine
 const storage = multer.diskStorage({
   destination: "uploads",
   filename: (req, file, cb) => {
@@ -23,5 +22,7 @@ const upload = multer({ storage: storage });
 foodRouter.post("/add", upload.single("image"), addFood);
 foodRouter.get("/list", listFood);
 foodRouter.post("/remove", removeFood);
+foodRouter.put("/edit/:id", updateFood);
+foodRouter.get("/categories", foodCategoryForAdminPanel);
 
 export default foodRouter;
