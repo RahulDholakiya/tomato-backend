@@ -3,32 +3,10 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 
-// const loginUser = async (req, res) => {
-//   const { email, password } = req.body;
-
-//   try {
-//     const user = await userModel.findOne({ email });
-
-//     if (!user) {
-//       return res.json({ success: false, message: "User Doesn't exist" });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-
-//     if (!isMatch) {
-//       return res.json({ success: false, message: "Invalid credentials" });
-//     }
-
-//     const token = createToken({ userId: user._id, role: user.role });
-//     res.json({ success: true, token, role: user.role });
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ success: false, message: "Error" });
-//   }
-// };
 const loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+
   try {
     const user = await userModel.findOne({ email });
     if (!user) {
@@ -36,11 +14,13 @@ const loginUser = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.json({ success: false, message: "Invalid credentials" });
     }
+
     const token = jwt.sign(
       {
         userId: user._id,
@@ -49,16 +29,14 @@ const loginUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
-    // console.log(token,'ggggggggggggggggggggggg');
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Login successful",
-        user,
-        token,
-        role: user.role,
-      });
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user,
+      token,
+      role: user.role,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
@@ -71,6 +49,7 @@ const createToken = (id) => {
 
 const registerUser = async (req, res) => {
   const { name, password, email, role } = req.body;
+
   try {
     const exists = await userModel.findOne({ email });
     if (exists) {
@@ -84,7 +63,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    if (password.length < 8) {
+    if (password.length < 2) {
       return res.json({
         success: false,
         message: "Please enter a strong password",
@@ -111,4 +90,15 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { loginUser, registerUser };
+const getUserRoleCount = async (req, res) => {
+  try {
+    const count = await userModel.countDocuments({ role: "User" });
+    const adminCount = await userModel.countDocuments({ role: "Admin" });
+    res.status(200).json({ success: true, count, adminCount });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { loginUser, registerUser, getUserRoleCount };

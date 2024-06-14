@@ -21,7 +21,11 @@ const foodSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-const foodModel = mongoose.models.food || mongoose.model("food", foodSchema);
+const foodModel = mongoose.models.Food || mongoose.model("Food", foodSchema);
 export default foodModel;
