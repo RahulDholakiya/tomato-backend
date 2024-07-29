@@ -36,14 +36,14 @@ app.use(bodyParser.json());
 connectDB();
 
 app.use("/api/food", foodRoute);
-app.use("/images", express.static(path.join(__dirname, 'uploads')));
+app.use("/images", express.static(path.join(__dirname, "uploads")));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/payment", paymentRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/rating", ratingRouter);
-app.use("/api",uploadRouter)
+app.use("/api", uploadRouter);
 
 app.get("/", (req, res) => {
   res.send("API Working");
